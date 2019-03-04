@@ -1,8 +1,10 @@
 # wowsy
 
-A new Flutter project.
+Check interesting facts about numbers and the dumbest things Donald Trump has ever said.
 
-## Getting Started
+
+
+## New to Flutter :question:
 
 For help getting started with Flutter, view our online
 [documentation](https://flutter.io/).
