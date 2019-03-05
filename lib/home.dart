@@ -17,7 +17,7 @@ class _HomeState extends State<Home> {
   Future<MathFact> fact;
 
   _HomeState({Key key, this.fact});
-  int defaultNumber = 1;
+  int defaultNumber = 0;
 
   @override
   void initState() {
@@ -28,7 +28,6 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
-
     Widget math = Material(
         child: ListView(
           children: <Widget>[
@@ -52,11 +51,16 @@ class _HomeState extends State<Home> {
                 future: fact,
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
-                    return Text(snapshot.data.body);
+                    return ListTile(
+                      title: Text(snapshot.data.body),
+                    );
                   } else if (snapshot.hasError) {
                     return Text("${snapshot.error}");
                   }
-                  return CircularProgressIndicator();
+                  return Container(
+                      height: 20.0,
+                      width: 20.0,
+                      child: CircularProgressIndicator());
                 },
               ),
             )
@@ -98,7 +102,7 @@ class MathFact {
 
   MathFact({this.body});
 
-  factory MathFact.fromJson(Map<String, dynamic> json) {
+  factory MathFact.fromJson(json) {
     print(json);
     return MathFact(
       body: json.toString()

@@ -10,7 +10,7 @@ Future<MathFact> fetchFact(String number) async {
   await http.get('http://numbersapi.com/$number');
 
   if (response.statusCode == 200) {
-    return MathFact.fromJson(json.decode(response.body.toString()));
+    return MathFact.fromJson(response.body.toString());
   } else {
     throw Exception('Failed to load fact');
   }
