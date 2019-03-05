@@ -52,7 +52,7 @@ class _HomeState extends State<Home> {
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
                     return ListTile(
-                      title: Text(snapshot.data.body),
+                      title: Text(snapshot.data.body, style: Theme.of(context).textTheme.title),
                     );
                   } else if (snapshot.hasError) {
                     return Text("${snapshot.error}");
@@ -63,7 +63,25 @@ class _HomeState extends State<Home> {
                       child: CircularProgressIndicator());
                 },
               ),
-            )
+            ),
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: TextField(
+                onChanged: (value){
+                  if (value.isNotEmpty) {
+                    setState(() {
+                      fact = fetchFact(value.toString());
+                    });
+                  }
+                },
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  helperText: 'Enter your own number.',
+                    border: OutlineInputBorder()
+
+                ),
+              ),
+            ),
 
           ],
         )
