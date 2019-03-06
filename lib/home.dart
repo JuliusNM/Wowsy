@@ -58,9 +58,9 @@ class _HomeState extends State<Home> {
                     return Text("${snapshot.error}");
                   }
                   return Container(
-                      height: 20.0,
-                      width: 20.0,
-                      child: CircularProgressIndicator());
+                      height: 15.0,
+                      width: 15.0,
+                      child: CircularProgressIndicator(strokeWidth: 2.0,));
                 },
               ),
             ),
