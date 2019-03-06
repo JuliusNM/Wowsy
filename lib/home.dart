@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:numberpicker/numberpicker.dart';
 import 'package:simple_autocomplete_formfield/simple_autocomplete_formfield.dart';
 import 'package:wowsy/requests.dart';
+import 'package:advanced_share/advanced_share.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 
 class Home extends StatefulWidget {
@@ -53,13 +55,30 @@ class _HomeState extends State<Home> {
                   if (snapshot.hasData) {
                     return ListTile(
                       title: Text(snapshot.data.body, style: Theme.of(context).textTheme.title),
+                      subtitle: Row(
+                        children: <Widget>[
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              IconButton(icon: Icon(FontAwesomeIcons.whatsapp, color: Colors.green,), onPressed: (){
+                                AdvancedShare.whatsapp(msg: snapshot.data.body + "")
+                                    .then((response) {
+                                });
+                              }),
+                              Text("Share via WhatsApp", style: TextStyle(
+                                fontSize: 8.0
+                              ),)
+                            ],
+                          )
+                        ],
+                      ),
                     );
                   } else if (snapshot.hasError) {
                     return Text("${snapshot.error}");
                   }
                   return Container(
-                      height: 15.0,
-                      width: 15.0,
+                      height: 5.0,
+                      width: 5.0,
                       child: CircularProgressIndicator(strokeWidth: 2.0,));
                 },
               ),

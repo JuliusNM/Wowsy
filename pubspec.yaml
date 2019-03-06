@@ -25,6 +25,8 @@ dependencies:
   shared_preferences: ^0.4.2
   numberpicker: ^0.1.7
   cupertino_icons: ^0.1.2
+  advanced_share: ^0.1.0
+  font_awesome_flutter: ^8.4.0
 
 dev_dependencies:
   flutter_test:
