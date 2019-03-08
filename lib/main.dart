@@ -16,9 +16,9 @@ class MyApp extends StatelessWidget {
         accentColor: Color(0xFFe98074),
 //        fontFamily: 'Montserrat',
         textTheme: TextTheme(
-          headline: TextStyle(fontSize: 72.0, fontWeight: FontWeight.bold),
-          title: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
-          body1: TextStyle(fontSize: 14.0, fontFamily: 'Hind'),
+          headline: TextStyle(fontSize: 72.0, fontWeight: FontWeight.bold, fontFamily: "Quicksand"),
+          title: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold, fontFamily: "Quicksand"),
+          body1: TextStyle(fontSize: 14.0, fontFamily: 'Quicksand'),
         ),
       ),
       home: Home(),

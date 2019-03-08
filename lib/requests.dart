@@ -1,13 +1,21 @@
 import 'dart:async';
-import 'dart:convert';
-
-import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:wowsy/home.dart';
 
-Future<MathFact> fetchFact(String number) async {
-  final response =
-  await http.get('http://numbersapi.com/$number');
+Future<MathFact> fetchFact(String number, String target) async {
+  String url = '';
+
+  print(target);
+  if (target == 'trivia'){
+    url = 'http://numbersapi.com/$number/';
+  }
+  else if (target == 'date'){
+    url = 'http://numbersapi.com/$number/date';
+  }
+  else if (target == 'math'){
+    url = 'http://numbersapi.com/$number/math';
+  }
+  final response = await http.get(url);
 
   if (response.statusCode == 200) {
     return MathFact.fromJson(response.body.toString());
@@ -15,3 +23,4 @@ Future<MathFact> fetchFact(String number) async {
     throw Exception('Failed to load fact');
   }
 }
+
