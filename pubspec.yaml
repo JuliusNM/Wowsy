@@ -20,6 +20,8 @@ dependencies:
   cupertino_icons: ^0.1.2
   advanced_share: ^0.1.0
   font_awesome_flutter: ^8.4.0
+  flutter_datetime_picker: ^0.1.0
+
 
 dev_dependencies:
   flutter_test:
