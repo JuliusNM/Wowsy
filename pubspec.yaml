@@ -1,6 +1,6 @@
 name: wowsy
 description: A new Flutter project.
-version: 1.0.0+1
+#version: 1.0.0+1
 
 environment:
   sdk: ">=2.0.0-dev.68.0 <3.0.0"
@@ -13,12 +13,10 @@ dependencies:
   flutter_bloc: ^0.5.0
   meta: ^1.1.6
   equatable: ^0.1.6
-  simple_autocomplete_formfield: ^0.2.3
   datetime_picker_formfield: ^0.1.7
   shared_preferences: ^0.4.2
   numberpicker: ^0.1.7
   cupertino_icons: ^0.1.2
-#  advanced_share: ^0.1.0
   font_awesome_flutter: ^8.4.0
   flutter_datetime_picker: ^0.1.0
   firebase_admob: ^0.8.0+3

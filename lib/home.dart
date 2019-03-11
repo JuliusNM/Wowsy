@@ -4,7 +4,6 @@ import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:numberpicker/numberpicker.dart';
 import 'package:wowsy/requests.dart';
-//import 'package:advanced_share/advanced_share.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:firebase_admob/firebase_admob.dart';
@@ -85,14 +84,13 @@ class _HomeState extends State<Home> with TickerProviderStateMixin{
       keywords: <String>['numbers', 'games', 'fact', 'birthdays', 'trivia', 'math'],
       contentUrl: 'https://flutter.io',
       childDirected: true,
-      testDevices: <String>["0CA7E71F2370FCB05A2496966E5B445D"],
+      testDevices: <String>[],
     );
     BannerAd myBanner = BannerAd(
       adUnitId: "ca-app-pub-9224488061407666/6041437971",
-      size: AdSize.smartBanner,
+      size: AdSize.banner,
       targetingInfo: targetingInfo,
       listener: (MobileAdEvent event) {
-        print("BannerAd event is $event");
       },
     );
     BannerAd myInterstitial = BannerAd(
@@ -155,12 +153,14 @@ class _HomeState extends State<Home> with TickerProviderStateMixin{
                           child: ListTile(
                             title: Text(snapshot.data.body, style: Theme.of(context).textTheme.title),
                             subtitle: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
                               children: <Widget>[
                                 Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: <Widget>[
                                     IconButton(icon: Icon(FontAwesomeIcons.shareAlt, color: Colors.green,), onPressed: (){
-                                      Share.share('');
+                                      Share.share(snapshot.data.body.toString() + "Download Wowsy App to see more interesting facts."+
+                                          "\nhttps://play.google.com/store/apps/details?id=com.jellosolutions.wowsy");
                                     }),
                                     Text("Share", style: TextStyle(
                                       fontSize: 10.0
@@ -205,7 +205,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin{
                             Row(
                               mainAxisAlignment: MainAxisAlignment.end,
                               children: <Widget>[
-                                Icon(Icons.edit)
+                                Icon(Icons.edit, color: Colors.green,)
                               ],
                             ),
                             Center(
@@ -268,6 +268,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin{
                     );
                     }, child: ListTile(
                     title: Text("Choose Date"),
+                    subtitle: Text("Find facts about specific dates"),
                     trailing: image("assets/calender.png"),
                     )),
                   ),
