@@ -4,38 +4,41 @@ import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:numberpicker/numberpicker.dart';
 import 'package:wowsy/requests.dart';
-import 'package:advanced_share/advanced_share.dart';
+//import 'package:advanced_share/advanced_share.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
+import 'package:firebase_admob/firebase_admob.dart';
+import 'package:share/share.dart';
+
 
 
 class Countdown extends AnimatedWidget {
   Countdown({ Key key, this.animation }) : super(key: key, listenable: animation);
-  Animation<int> animation;
+  final Animation<int> animation;
 
   @override
   build(BuildContext context){
     return new Text(
       animation.value.toString(),
-      style: new TextStyle(fontSize: 150.0),
+      style: Theme.of(context).textTheme.headline,
     );
   }
 }
 
 class Home extends StatefulWidget{
+
   final Future<MathFact> fact;
   Home({Key key, this.fact}) : super(key: key);
+
   @override
   _HomeState createState() => _HomeState();
 }
 
 class _HomeState extends State<Home> with TickerProviderStateMixin{
-  AnimationController _controller;
-
-  static int kStartValue = 100;
-
   _HomeState({Key key, this.fact});
+  AnimationController _controller;
   Future<MathFact> fact;
+  static int kStartValue = 100;
   int defaultNumber = 0;
   FocusNode _numberFocusNode = new FocusNode();
   final myDateFormat = DateFormat('M/dd');
@@ -43,6 +46,25 @@ class _HomeState extends State<Home> with TickerProviderStateMixin{
   bool show = true;
   bool random = true;
   bool _visible = true;
+
+  hideNumberWidget(){
+    if(_numberFocusNode.hasFocus){
+      setState(() {
+        show = false;
+      });
+    }
+  }
+  showNumberWidget(){
+      setState(() {
+        show = true;
+      });
+  }
+  toggleWidget(){
+    setState(() {
+      _visible = !_visible;
+      random = !_visible;
+    });
+  }
 
   @override
   void initState() {
@@ -54,14 +76,53 @@ class _HomeState extends State<Home> with TickerProviderStateMixin{
     random = true;
     _controller = new AnimationController(
       vsync: this,
-      duration: new Duration(milliseconds: 50),
+      duration: new Duration(seconds: 1),
     );
     _controller.forward(from: 0.0);
+    ///Ads
+    FirebaseAdMob.instance.initialize(appId: "ca-app-pub-9224488061407666~7709742861");
+    MobileAdTargetingInfo targetingInfo = MobileAdTargetingInfo(
+      keywords: <String>['numbers', 'games', 'fact', 'birthdays', 'trivia', 'math'],
+      contentUrl: 'https://flutter.io',
+      childDirected: true,
+      testDevices: <String>["0CA7E71F2370FCB05A2496966E5B445D"],
+    );
+    BannerAd myBanner = BannerAd(
+      adUnitId: "ca-app-pub-9224488061407666/6041437971",
+      size: AdSize.smartBanner,
+      targetingInfo: targetingInfo,
+      listener: (MobileAdEvent event) {
+        print("BannerAd event is $event");
+      },
+    );
+    BannerAd myInterstitial = BannerAd(
+      adUnitId: "ca-app-pub-9224488061407666/6249090021",
+      size: AdSize.fullBanner,
+      targetingInfo: targetingInfo,
+      listener: (MobileAdEvent event) {
+        print("BannerAd event is $event");
+      },
+    );
+      myBanner
+        ..load()
+        ..show(
+          anchorOffset: 0.0,
+          anchorType: AnchorType.bottom,
+        );
+      Future.delayed(const Duration(seconds: 60), (){
+        myInterstitial
+          ..load()
+          ..show(
+            anchorType: AnchorType.bottom,
+            anchorOffset: 0.0,
+          );
+      });
   }
 
   @override
   Widget build(BuildContext context) {
     Widget image(String asset){
+
       return Image(
       image: AssetImage(asset),
       color: null,
@@ -98,13 +159,11 @@ class _HomeState extends State<Home> with TickerProviderStateMixin{
                                 Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: <Widget>[
-                                    IconButton(icon: Icon(FontAwesomeIcons.whatsapp, color: Colors.green,), onPressed: (){
-                                      AdvancedShare.whatsapp(msg: snapshot.data.body + "")
-                                          .then((response) {
-                                      });
+                                    IconButton(icon: Icon(FontAwesomeIcons.shareAlt, color: Colors.green,), onPressed: (){
+                                      Share.share('');
                                     }),
-                                    Text("Share via WhatsApp", style: TextStyle(
-                                      fontSize: 8.0
+                                    Text("Share", style: TextStyle(
+                                      fontSize: 10.0
                                     ),)
                                   ],
                                 )
@@ -129,27 +188,55 @@ class _HomeState extends State<Home> with TickerProviderStateMixin{
             ),
             GestureDetector(
               onTap: (){
-                setState(() {
-                  _visible = !_visible;
-                  random = !_visible;
-                });
+                toggleWidget();
               },
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: AnimatedOpacity(
                   opacity: !random ? 1.0 : 0.8,
                   duration: Duration(milliseconds: 500),
-                  child: random ? Card(
-                    child: Countdown(
-                      animation: new StepTween(
-                        begin: 20,
-                        end: defaultNumber,
-                      ).animate(_controller),
+                  child: random ? show ? Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(30.0),
+                      child: Container(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: <Widget>[
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: <Widget>[
+                                Icon(Icons.edit)
+                              ],
+                            ),
+                            Center(
+                              child: Column(
+                                children: <Widget>[
+                                  GestureDetector(
+                                    onTap: (){
+                                      _controller.forward(from: 0.0).then((_){
+                                        setState(() {
+                                          fact = fetchFact(defaultNumber.toString(), target);
+                                        });
+                                      });
+                                    },
+                                    child: Countdown(
+                                      animation: new StepTween(
+                                        begin: Random().nextInt(100),
+                                        end: defaultNumber,
+                                      ).animate(_controller),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
                     ),
-                  ): Card(
+                  ):Container(): Card(
                     child: target != "date" ? show ? Container(
                         child: Padding(
-                            padding: const EdgeInsets.all(32.0),
+                            padding: const EdgeInsets.all(8.0),
                             child: NumberPicker.integer(
                                 initialValue: defaultNumber,
                                 minValue: 0,
@@ -178,9 +265,7 @@ class _HomeState extends State<Home> with TickerProviderStateMixin{
                           fact = fetchFact(myDateFormat.format(date).toString(), target);
                         });
                       },
-
                     );
-
                     }, child: ListTile(
                     title: Text("Choose Date"),
                     trailing: image("assets/calender.png"),
@@ -198,30 +283,24 @@ class _HomeState extends State<Home> with TickerProviderStateMixin{
               child: TextField(
                 focusNode: _numberFocusNode,
                 onChanged: (value){
-                  if(_numberFocusNode.hasFocus){
+                  hideNumberWidget();
                     if (value.isNotEmpty) {
                       setState(() {
                         fact = fetchFact(value.toString(), target);
                       });
                     }
-                    setState(() {
-                      show = false;
-                    });
-                  }
                 },
                 onSubmitted: (value){
                   setState(() {
                     if (value.isNotEmpty) {
                       fact = fetchFact(value.toString(), target);
                     }
-                    show = true;
+                    showNumberWidget();
                   });
                   FocusScope.of(context).requestFocus(new FocusNode());
                 },
                 onEditingComplete: (){
-                  setState(() {
-                    show = true;
-                  });
+                  showNumberWidget();
                   FocusScope.of(context).requestFocus(new FocusNode());
                 },
                 keyboardType: TextInputType.number,
@@ -240,19 +319,6 @@ class _HomeState extends State<Home> with TickerProviderStateMixin{
     return DefaultTabController(
       length: 3,
       child: Scaffold(
-        floatingActionButton: FloatingActionButton(onPressed: ()async{
-          _controller.forward(from: 0.0).then((_){
-            setState(() {
-              _visible = !_visible;
-              if (!show){
-                defaultNumber = Random().nextInt(100);
-              }
-              fact = fetchFact(defaultNumber.toString(), 'math');
-            });
-          });
-        },
-        child: Icon(FontAwesomeIcons.random, color: Colors.white),
-        backgroundColor: Theme.of(context).primaryColor,),
         appBar: AppBar(title: Text("Wowsy"),
           bottom: TabBar(
             labelStyle: TextStyle(fontFamily: "Quicksand"),

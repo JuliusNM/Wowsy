@@ -1,4 +1,4 @@
-package com.example.wowsy;
+package com.jellosolutions.wowsy;
 
 import android.os.Bundle;
 import io.flutter.app.FlutterActivity;

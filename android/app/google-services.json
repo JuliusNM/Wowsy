@@ -1,0 +1,43 @@
+{
+  "project_info": {
+    "project_number": "643952780112",
+    "firebase_url": "https://jello-e215a.firebaseio.com",
+    "project_id": "jello-e215a",
+    "storage_bucket": "jello-e215a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:643952780112:android:fc3eccf7ea190948",
+        "android_client_info": {
+          "package_name": "com.jellosolutions.wowsy"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "643952780112-fs63ec8ta4fljree8lhi2g7elcnflge8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA8svsel9XjiqNIT3vo6V-luKD9XEpTZ1s"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      },
+      "admob_app_id": "ca-app-pub-9224488061407666~7709742861"
+    }
+  ],
+  "configuration_version": "1"
+}
