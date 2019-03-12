@@ -107,14 +107,12 @@ class _HomeState extends State<Home> with TickerProviderStateMixin{
           anchorOffset: 0.0,
           anchorType: AnchorType.bottom,
         );
-      Future.delayed(const Duration(seconds: 60), (){
         myInterstitial
           ..load()
           ..show(
             anchorType: AnchorType.bottom,
             anchorOffset: 0.0,
           );
-      });
   }
 
   @override

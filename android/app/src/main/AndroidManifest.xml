@@ -15,7 +15,7 @@
     <application
         android:name="io.flutter.app.FlutterApplication"
         android:label="Wowsy"
-        android:icon="@mipmap/wowsylogo">
+        android:icon="@mipmap/wow">
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
