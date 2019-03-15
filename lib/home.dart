@@ -9,8 +9,6 @@ import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:firebase_admob/firebase_admob.dart';
 import 'package:share/share.dart';
 
-
-
 class Countdown extends AnimatedWidget {
   Countdown({ Key key, this.animation }) : super(key: key, listenable: animation);
   final Animation<int> animation;
@@ -46,6 +44,33 @@ class _HomeState extends State<Home> with TickerProviderStateMixin{
   bool random = true;
   bool _visible = true;
 
+  final  List<Tab> myTabs = <Tab>[
+    Tab(icon: Image(
+        image: AssetImage("assets/albert.png"),
+        color: null,
+        fit: BoxFit.scaleDown,
+        height: 35.0,
+        width: 35.0,
+        alignment: Alignment.center
+    ), text: "Math"),
+    Tab(icon: Image(
+        image: AssetImage("assets/child.png"),
+        color: null,
+        fit: BoxFit.scaleDown,
+        height: 35.0,
+        width: 35.0,
+        alignment: Alignment.center
+    ), text: "Trivia"),
+    Tab(icon: Image(
+        image: AssetImage("assets/calender.png"),
+        color: null,
+        fit: BoxFit.scaleDown,
+        height: 35.0,
+        width: 35.0,
+        alignment: Alignment.center
+    ), text: "Date"),
+  ];
+
   hideNumberWidget(){
     if(_numberFocusNode.hasFocus){
       setState(() {
@@ -64,11 +89,64 @@ class _HomeState extends State<Home> with TickerProviderStateMixin{
       random = !_visible;
     });
   }
+  Widget image(String asset){
+    return Image(
+        image: AssetImage(asset),
+        color: null,
+        fit: BoxFit.scaleDown,
+        height: 35.0,
+        width: 35.0,
+        alignment: Alignment.center
+    );
+  }
+
+  TabController _tabController;
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
+    _tabController = TabController(vsync: this, length: myTabs.length);
+    MobileAdTargetingInfo targetingInfo = MobileAdTargetingInfo(
+      keywords: <String>['numbers', 'games', 'fact', 'birthdays', 'trivia', 'math'],
+      contentUrl: 'https://flutter.io',
+      childDirected: true,
+      testDevices: <String>[],
+    );
+    BannerAd myInterstitial = BannerAd(
+      adUnitId: "ca-app-pub-9224488061407666/6249090021",
+      size: AdSize.fullBanner,
+      targetingInfo: targetingInfo,
+      listener: (MobileAdEvent event) {
+        print("BannerAd event is $event");
+      },
+    );
+    _tabController.addListener(() {
+      if (_tabController.indexIsChanging) {
+        print(_tabController.index);
+        if(_tabController.index == 1){
+          setState(() {
+            fact = fetchFact(defaultNumber.toString(), "trivia");
+          });
+        }
+        else if(_tabController.index == 2){
+          setState(() {
+            fact = fetchFact(defaultNumber.toString(), "date");
+          });
+        }
+        else if (_tabController.index == 0){
+          setState(() {
+            fact = fetchFact(defaultNumber.toString(), "math");
+          });
+          myInterstitial
+            ..load()
+            ..show(
+              anchorType: AnchorType.bottom,
+              anchorOffset: 0.0,
+            );
+        }
+      }
+    });
+
     defaultNumber = Random().nextInt(100);
     fact = fetchFact(defaultNumber.toString(), 'math');
     show = true;
@@ -80,25 +158,11 @@ class _HomeState extends State<Home> with TickerProviderStateMixin{
     _controller.forward(from: 0.0);
     ///Ads
     FirebaseAdMob.instance.initialize(appId: "ca-app-pub-9224488061407666~7709742861");
-    MobileAdTargetingInfo targetingInfo = MobileAdTargetingInfo(
-      keywords: <String>['numbers', 'games', 'fact', 'birthdays', 'trivia', 'math'],
-      contentUrl: 'https://flutter.io',
-      childDirected: true,
-      testDevices: <String>[],
-    );
     BannerAd myBanner = BannerAd(
       adUnitId: "ca-app-pub-9224488061407666/6041437971",
       size: AdSize.banner,
       targetingInfo: targetingInfo,
       listener: (MobileAdEvent event) {
-      },
-    );
-    BannerAd myInterstitial = BannerAd(
-      adUnitId: "ca-app-pub-9224488061407666/6249090021",
-      size: AdSize.fullBanner,
-      targetingInfo: targetingInfo,
-      listener: (MobileAdEvent event) {
-        print("BannerAd event is $event");
       },
     );
       myBanner
@@ -107,31 +171,17 @@ class _HomeState extends State<Home> with TickerProviderStateMixin{
           anchorOffset: 0.0,
           anchorType: AnchorType.bottom,
         );
-        myInterstitial
-          ..load()
-          ..show(
-            anchorType: AnchorType.bottom,
-            anchorOffset: 0.0,
-          );
+
   }
+  @override
+  void dispose() {
+    super.dispose();
+    _tabController.dispose();
+  }
+
 
   @override
   Widget build(BuildContext context) {
-    Widget image(String asset){
-
-      return Image(
-      image: AssetImage(asset),
-      color: null,
-      fit: BoxFit.scaleDown,
-      height: 35.0,
-      width: 35.0,
-      alignment: Alignment.center
-    );
-    }
-    Widget myTab(String asset, String text){
-      return Tab(icon: image(asset), text: text);
-    }
-
     Widget math (String target) {
       return Material(
         child: ListView(
@@ -315,25 +365,20 @@ class _HomeState extends State<Home> with TickerProviderStateMixin{
         )
     );
     }
-    return DefaultTabController(
-      length: 3,
-      child: Scaffold(
-        appBar: AppBar(title: Text("Wowsy"),
-          bottom: TabBar(
-            labelStyle: TextStyle(fontFamily: "Quicksand"),
-            tabs: [
-              myTab("assets/albert.png", "Math"),
-              myTab("assets/child.png", "Trivia"),
-              myTab("assets/calender.png", "Date"),
-            ],
-          ),),
-        body: TabBarView(
-          children: [
-            math("math"),
-            math("trivia"),
-            math("date"),
-          ],
+    return Scaffold(
+      appBar: AppBar(
+        bottom: TabBar(
+          controller: _tabController,
+          tabs: myTabs,
         ),
+      ),
+      body: TabBarView(
+        controller: _tabController,
+        children: <Widget>[
+          math("math"),
+          math("trivia"),
+          math("date"),
+        ],
       ),
     );
   }
