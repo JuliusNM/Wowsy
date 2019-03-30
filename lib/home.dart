@@ -6,7 +6,6 @@ import 'package:numberpicker/numberpicker.dart';
 import 'package:wowsy/requests.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
-import 'package:firebase_admob/firebase_admob.dart';
 import 'package:share/share.dart';
 
 class Countdown extends AnimatedWidget {
@@ -106,20 +105,6 @@ class _HomeState extends State<Home> with TickerProviderStateMixin{
   void initState() {
     super.initState();
     _tabController = TabController(vsync: this, length: myTabs.length);
-    MobileAdTargetingInfo targetingInfo = MobileAdTargetingInfo(
-      keywords: <String>['numbers', 'games', 'fact', 'birthdays', 'trivia', 'math'],
-      contentUrl: 'https://flutter.io',
-      childDirected: true,
-      testDevices: <String>[],
-    );
-    BannerAd myInterstitial = BannerAd(
-      adUnitId: "ca-app-pub-9224488061407666/6249090021",
-      size: AdSize.fullBanner,
-      targetingInfo: targetingInfo,
-      listener: (MobileAdEvent event) {
-        print("BannerAd event is $event");
-      },
-    );
     _tabController.addListener(() {
       if (_tabController.indexIsChanging) {
         print(_tabController.index);
@@ -137,12 +122,6 @@ class _HomeState extends State<Home> with TickerProviderStateMixin{
           setState(() {
             fact = fetchFact(defaultNumber.toString(), "math");
           });
-          myInterstitial
-            ..load()
-            ..show(
-              anchorType: AnchorType.bottom,
-              anchorOffset: 0.0,
-            );
         }
       }
     });
@@ -156,22 +135,6 @@ class _HomeState extends State<Home> with TickerProviderStateMixin{
       duration: new Duration(seconds: 1),
     );
     _controller.forward(from: 0.0);
-    ///Ads
-    FirebaseAdMob.instance.initialize(appId: "ca-app-pub-9224488061407666~7709742861");
-    BannerAd myBanner = BannerAd(
-      adUnitId: "ca-app-pub-9224488061407666/6041437971",
-      size: AdSize.banner,
-      targetingInfo: targetingInfo,
-      listener: (MobileAdEvent event) {
-      },
-    );
-      myBanner
-        ..load()
-        ..show(
-          anchorOffset: 0.0,
-          anchorType: AnchorType.bottom,
-        );
-
   }
   @override
   void dispose() {
