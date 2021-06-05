@@ -350,7 +350,6 @@ class MathFact {
   final String body;
   MathFact({this.body});
   factory MathFact.fromJson(json) {
-    print(json);
     return MathFact(
       body: json.toString()
     );
